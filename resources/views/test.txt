@@ -1,0 +1,23 @@
+ @foreach ($allCategory as $cat)
+                    @php
+
+                        $title = Str::title($cat->category);
+                        $url = route('category', ['category' => $cat->category]);
+                    @endphp
+@endforeach
+
+
+ @foreach ($posts->slice(0, 1) as $post)
+                            @php
+                                $url = route('blog', ['slug' => $post->slug]);
+                                $title = Str::title($post->title);
+
+                                $image = $post->thumbnail;
+                                $description = $post->description;
+
+                                $date = $post->created_at->format('d.m.y');
+                                $author = $post->author?->name;
+                                $cat = $post->category->category;
+                                $catUrl = route('category', ['category' => $cat]);
+                            @endphp
+@endforeach

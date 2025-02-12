@@ -119,14 +119,14 @@ form .text h3 a:hover{
     <form method="POST" >
     @csrf
         @if ($errors->any())
-        <div class="red">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-     @endif
+            <div class="red">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
      
       <div class="input-box">
         <input type="text" placeholder="Enter your email" required name="email">

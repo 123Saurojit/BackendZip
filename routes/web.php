@@ -26,11 +26,10 @@ use Illuminate\Support\Facades\Route;
 
 // })->name('admin');
 
-Route::get('/login', [LoginController::class, 'loginForm'])->name('login');
-
 
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/login', [LoginController::class, 'loginForm'])->name('login');
 
 
 Route::get('/',[PageController::class, 'home'])->name('home'); 

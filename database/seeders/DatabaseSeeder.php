@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             Posts::create([
                 'category_id' => $category,
                 'author_id' => 1,
-                'trending' => 0,
+                'trending' => rand(0,1),
                 'title' => $title,
                 'slug'  => Str::slug(strtolower($title)),
                 'description' => "Description",
@@ -88,22 +88,12 @@ class DatabaseSeeder extends Seeder
     public function category()
     {
         if (!Category::exists()) {
+            $categories = ["Fashion", "Beauty", "Culture", "Horoscopes", "News & Politics", "Elle Brillante","Travel","Food"];
 
-            $categories = [
-                "CEO Insider",
-                "Featured",
-                "Lifestyle",
-                "AI",
-                "CRYPTO",
-                "Leadership",
-                "Listicle",
-                "World"
-            ];
 
             foreach ($categories as $category) {
                 Category::create([
                     'category' => $category,
-                    'headline' => 1,
                 ]);
             }
         }

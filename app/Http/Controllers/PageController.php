@@ -14,40 +14,7 @@ class PageController extends Controller
 {
     public function home(Request $request)
     {
-        $trendingPosts = Posts::where('trending',1)->get();
-
-        $firstPost = FirstPost::with('post')->find(1)?->post ;
-
-
-        $newsSectionPosts = Posts::with(['category'])
-                ->whereHas('category', function ($query) {
-                    // $query->whereIn('category', ['government', 'start up', 'innovation' , 'tax & law']);
-                    $query->whereIn('category', ['ceo insider','world']);
-
-                })
-                ->latest()
-                ->limit(5)
-                ->get();
-
-
-        $justNowPosts = Posts::with(['category'])->whereHas('category', function ($query) {
-            $query->whereIn('category', ['listicle', 'ai', 'crypto']);
-        })
-        ->latest()
-        ->limit(5)
-        ->get();         
-
-        
-        $luxurySectionPosts = Posts::with(['category'])->whereHas('category', function ($query) {
-            $query->whereIn('category', [ 'featured']);
-        })
-        ->latest()
-        ->limit(6)
-        ->get();
-
-
-        return view('pages.home',compact( 'trendingPosts'  , 'firstPost' , 'newsSectionPosts' , 'justNowPosts' , 'luxurySectionPosts'));
-  
+        return view('pages.home');
     }
 
     public function search(Request $request)
@@ -64,6 +31,7 @@ class PageController extends Controller
                 ->orWhere('description', 'like', '%' . $search . '%')
                 ->with('category')
                 ->latest()
+                ->limit(28)
                 ->get();
         }
 
@@ -77,11 +45,11 @@ class PageController extends Controller
 
         $post = Posts::where('slug', $slug)->with('category')->firstOrFail();
 
-        $categoryName = $post->category->category ; 
+        $categoryName = $post->category->category;
 
-        $categoryId = $post->category->id ;
+        $categoryId = $post->category->id;
 
-        $relatedPosts= Posts::where('category_id' , $categoryId )->where('id' , '!=' , $post->id )->limit(4)->get()  ;
+        $relatedPosts = Posts::where('category_id', $categoryId)->where('id', '!=', $post->id)->latest()->limit(12)->get();
 
         return view('pages.blog', compact('post',  'categoryName', 'relatedPosts'));
     }
@@ -89,24 +57,16 @@ class PageController extends Controller
     public function category($category)
     {
 
-        $cat_not_exist = false ;
+        $category = strtolower(implode(" ", explode('-', $category)));
 
-        $category = strtolower( implode(" ", explode('-', $category) ));
+        $catExist = Category::where('category', $category)->firstOrFail();
 
-        $posts = Category::where('category' , $category)->with(['posts'=> function($query){
-                                                                    $query->latest();
-                                                                }])->first();
-                                                    
-        if ( $posts )
-        {
-            $cat_not_exist = true ;
-        } 
+        $posts = Posts::where('category_id', $catExist->id)->latest()->limit(60)->get();
 
-        return view('pages.category', compact('category' ,  'cat_not_exist' , 'posts'));
+        return view('pages.category', compact('category', 'posts'));
     }
 
-    public function staticPage($slug)
-    {
+    public function staticPage($slug){
 
         $page = StaticPage::where('slug',$slug)->firstOrFail() ;
     
